@@ -1,0 +1,8 @@
+# venv
+nba/
+
+# cache
+
+__pycache__/
+# logs
+log
