@@ -1,3 +1,4 @@
+import os
 import logging
 from apache_beam import DoFn
 from requests import get
@@ -12,19 +13,21 @@ class BallsDontLie(DoFn):
     def process(self, element):    
         url = element.get("url")
         
-        response = get(url)
-        
-        total_pages = (
+        response = get(
+            url,
+            headers={
+                "Authorization": os.getenv("TOKEN")
+            })
+
+        next_cursor = (
             response.json()
             .get("meta")
-            .get("total_pages")
+            .get("next_cursor")
         )
         
-        for i in range(2, total_pages+1):
-            try:
-                response = get(url + "?page=" + str(i))
-                
-                logging.info(f"Pagina {i} retornou o status code: {response.status_code}")
+        if next_cursor:
+            try:                
+                logging.info(f"Pagina retornou o status code: {response.status_code}")
                 
                 if response.status_code == 200: 
                     for player in response.json().get("data"):

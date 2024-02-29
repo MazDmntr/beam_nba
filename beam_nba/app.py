@@ -2,6 +2,9 @@ import os
 import apache_beam as beam
 from utils.pardo import BallsDontLie
 from utils.method import json_to_csv_line
+from dotenv import load_dotenv
+
+load_dotenv("../.env")
 
 with beam.Pipeline() as pipeline:
     start = (
